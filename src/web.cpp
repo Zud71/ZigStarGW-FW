@@ -355,7 +355,7 @@ void handleSaveSucces(String msg)
     result += F("<div id='main' class='col-sm-12'>");
     result += F("<div id='main' class='col-sm-6'>");
     result += F("<form method='GET' action='reboot' id='upload_form'>");
-    result += F("<label>Сохранить ");
+    result += F("<label>Сохранено ");
     result += msg;
     result += F(" OK !</label><br><br><br>");
     result += F("<button type='submit' class='btn btn-warning mb-2'>Перезагрузка</button>");
@@ -705,7 +705,7 @@ void handleRoot()
     }
     result.replace("{{stateEther}}", ethState);
 
-    String wifiState = "<strong>Включено : </strong>";
+    String wifiState = "<strong>Включен : </strong>";
     if (ConfigSettings.enableWiFi || ConfigSettings.emergencyWifi)
     {
       wifiState += "<img src='/img/ok.png'>";
@@ -760,12 +760,12 @@ void handleRoot()
     }
     result.replace("{{stateWifi}}", wifiState);
 
-    String mqttState = "<strong>Включено : </strong>";
+    String mqttState = "<strong>Включен : </strong>";
     if (ConfigSettings.mqttEnable)
     {
       mqttState += "<img src='/img/ok.png'>";
       mqttState = mqttState + "<br><strong>Сервер : </strong>" + ConfigSettings.mqttServer;
-      mqttState += "<br><strong>Соединено : </strong>";
+      mqttState += "<br><strong>Соединен : </strong>";
       if (ConfigSettings.mqttReconnectTime == 0)
       {
         mqttState += "<img src='/img/ok.png'>";
