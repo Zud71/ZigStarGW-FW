@@ -70,7 +70,7 @@ function checkLatestRelease() {
   document.addEventListener('hide.toast', (e) => {
     console.log(e.detail.target);
   });
-	$.getJSON("https://api.github.com/repos/xyzroe/ZigStarGW-FW/releases/latest").done(function(release) {
+	$.getJSON("https://api.github.com/repos/Zud71/ZigStarGW-FW-RU/releases/latest").done(function(release) {
 	  var asset = release.assets[0];
 	  var downloadCount = 0;
 	  for (var i = 0; i < release.assets.length; i++) {
@@ -85,9 +85,9 @@ function checkLatestRelease() {
     var gitVer = Number(release.name.split('.').join(""));
     var localVer = Number(exampleAttr.split('.').join(""));
 
-    var releaseInfo = "New firmware version (" + gitVer + ") was found on GitHub. It was downloaded " + downloadCount.toLocaleString() + " times. Go -> Tools -> Update ESP32 page to get more info.";
+    var releaseInfo = "На GitHub найдена новая версия прошивки ("+gitVer+"). Он был загружен " + downloadCount.toLocaleString() + " раз. Перейдите -> Инструменты -> Страница обновления ESP32, чтобы получить дополнительную информацию.";
 
-    var betaInfo = "Thanks for testing new version! Don't forget to give feedback ;)";
+    var betaInfo = "Спасибо за тестирование новой версии! Не забывайте оставлять отзывы";
 
 
     if (gitVer > localVer) {

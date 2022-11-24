@@ -345,7 +345,7 @@ bool loadConfigGeneral()
   File configFile = LittleFS.open(path, FILE_READ);
   if (!configFile)
   {
-    String deviceID = "ZigStarGW";
+    String deviceID = "ZigStarGWRU";
     //getDeviceID(deviceID);
     String StringConfig = "{\"hostname\":\"" + deviceID + "\",\"disableWeb\":0,\"refreshLogs\":1000,\"webAuth\":0,\"webUser\":"
                                                           ",\"webPass\":"

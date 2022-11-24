@@ -117,7 +117,7 @@ void initWebServer()
           {
             if (Update.end(true))
             { //true to set the size to the current progress
-              Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+              Serial.printf("Обновление успешно: %u\nПерезагрузка...\n", upload.totalSize);
             }
             else
             {
@@ -207,7 +207,7 @@ void handleLoggedOut()
   result.replace("{{logoutLink}}", "");
   result += FPSTR(HTTP_ERROR);
   result += F("</html>");
-  result.replace("{{pageName}}", "Logged out");
+  result.replace("{{pageName}}", "Вышли из");
 
   serverWeb.send(200, F("text/html"), result);
 }
@@ -244,9 +244,9 @@ bool checkAuth()
 
   result += FPSTR(HTTP_ERROR);
   result += F("</html>");
-  result.replace("{{pageName}}", "Authentication failed");
+  result.replace("{{pageName}}", "Ошибка аутентификации");
 
-  const char *www_realm = "Login Required";
+  const char *www_realm = "Требуется логин";
 
   if (ConfigSettings.webAuth && !serverWeb.authenticate(ConfigSettings.webUser, ConfigSettings.webPass))
   {
@@ -276,7 +276,7 @@ void handleHelp()
     }
     result += FPSTR(HTTP_HELP);
     result += F("</html>");
-    result.replace("{{pageName}}", "Help");
+    result.replace("{{pageName}}", "Помощь");
     if (ConfigSettings.webAuth)
     {
       result.replace("{{logoutLink}}", LOGOUT_LINK);
@@ -307,7 +307,7 @@ void handleGeneral()
     result += FPSTR(HTTP_GENERAL);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "General");
+    result.replace("{{pageName}}", "Основная");
 
     if (ConfigSettings.disableWeb)
     {
@@ -355,13 +355,13 @@ void handleSaveSucces(String msg)
     result += F("<div id='main' class='col-sm-12'>");
     result += F("<div id='main' class='col-sm-6'>");
     result += F("<form method='GET' action='reboot' id='upload_form'>");
-    result += F("<label>Save ");
+    result += F("<label>Сохранить ");
     result += msg;
     result += F(" OK !</label><br><br><br>");
-    result += F("<button type='submit' class='btn btn-warning mb-2'>Reboot</button>");
+    result += F("<button type='submit' class='btn btn-warning mb-2'>Перезагрузка</button>");
     result += F("</form></div></div>");
     result += F("</html>");
-    result.replace("{{pageName}}", "Saved");
+    result.replace("{{pageName}}", "Сохранено");
 
     serverWeb.send(200, "text/html", result);
   }
@@ -385,7 +385,7 @@ void handleWifi()
     result += FPSTR(HTTP_WIFI);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Config WiFi");
+    result.replace("{{pageName}}", "Настройка WiFi");
 
     DEBUG_PRINTLN(ConfigSettings.enableWiFi);
     if (ConfigSettings.enableWiFi)
@@ -442,7 +442,7 @@ void handleSerial()
     result += FPSTR(HTTP_SERIAL);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Config Serial");
+    result.replace("{{pageName}}", "Настройка последовательного порта");
 
     if (ConfigSettings.serialSpeed == 9600)
     {
@@ -492,7 +492,7 @@ void handleEther()
     result += FPSTR(HTTP_ETHERNET);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Config Ethernet");
+    result.replace("{{pageName}}", "Настройка сетевого порта");
 
     if (ConfigSettings.dhcp)
     {
@@ -537,7 +537,7 @@ void handleMqtt()
     result += FPSTR(HTTP_MQTT);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Config MQTT");
+    result.replace("{{pageName}}", "Настройка MQTT");
 
     if (ConfigSettings.mqttEnable)
     {
@@ -594,7 +594,7 @@ void handleRoot()
     result += FPSTR(HTTP_ROOT);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Status");
+    result.replace("{{pageName}}", "Статус");
 
     String socketStatus;
     String readableTime;
@@ -633,7 +633,7 @@ void handleRoot()
 
       if (temp_ow)
       {
-        OWWstrg = "<br><strong>OW temperature : </strong>" + String(temp_ow) + " &deg;C";
+        OWWstrg = "<br><strong>OW температура : </strong>" + String(temp_ow) + " &deg;C";
         result.replace("{{dsTemp}}", OWWstrg);
       }
       else
@@ -660,16 +660,16 @@ void handleRoot()
 
     if (chip_info.features & CHIP_FEATURE_EMB_FLASH)
     {
-      result.replace("{{espFlashType}}", "embedded");
+      result.replace("{{espFlashType}}", "встроенная");
     }
     else
     {
-      result.replace("{{espFlashType}}", "external");
+      result.replace("{{espFlashType}}", "внешняя");
     }
 
     result.replace("{{espFlashSize}}", String(ESP.getFlashChipSize() / (1024 * 1024)));
 
-    String ethState = "<strong>Connected : </strong>";
+    String ethState = "<strong>Соединен : </strong>";
     if (ConfigSettings.connectedEther)
     {
       int speed = ETH.linkSpeed();
@@ -684,19 +684,19 @@ void handleRoot()
       }
       ethState += "<img src='/img/ok.png'>";
       ethState += "<br><strong>MAC : </strong>" + ETH.macAddress();
-      ethState += "<br><strong>Speed : </strong> " + SpeedEth;
-      ethState += "<br><strong>Mode : </strong>";
+      ethState += "<br><strong>Скорость : </strong> " + SpeedEth;
+      ethState += "<br><strong>Режим : </strong>";
       if (ConfigSettings.dhcp)
       {
         ethState += "DHCP<br><strong>IP : </strong>" + ETH.localIP().toString();
-        ethState += "<br><strong>Mask : </strong>" + ETH.subnetMask().toString();
-        ethState += "<br><strong>GW : </strong>" + ETH.gatewayIP().toString();
+        ethState += "<br><strong>Маска : </strong>" + ETH.subnetMask().toString();
+        ethState += "<br><strong>Шлюз : </strong>" + ETH.gatewayIP().toString();
       }
       else
       {
-        ethState = ethState + "STATIC<br><strong>IP : </strong>" + ConfigSettings.ipAddress;
-        ethState = ethState + "<br><strong>Mask : </strong>" + ConfigSettings.ipMask;
-        ethState = ethState + "<br><strong>GW : </strong>" + ConfigSettings.ipGW;
+        ethState = ethState + "Статический<br><strong>IP : </strong>" + ConfigSettings.ipAddress;
+        ethState = ethState + "<br><strong>Маска : </strong>" + ConfigSettings.ipMask;
+        ethState = ethState + "<br><strong>Шлюз : </strong>" + ConfigSettings.ipGW;
       }
     }
     else
@@ -705,22 +705,22 @@ void handleRoot()
     }
     result.replace("{{stateEther}}", ethState);
 
-    String wifiState = "<strong>Enabled : </strong>";
+    String wifiState = "<strong>Включено : </strong>";
     if (ConfigSettings.enableWiFi || ConfigSettings.emergencyWifi)
     {
       wifiState += "<img src='/img/ok.png'>";
       if (ConfigSettings.emergencyWifi)
       {
-        wifiState += "<strong> Emergency mode</strong>";
+        wifiState += "<strong> Аварийный режим</strong>";
       }
       wifiState += "<br><strong>MAC : </strong>" + WiFi.softAPmacAddress();
-      wifiState += "<br><strong>Mode : </strong> ";
+      wifiState += "<br><strong>Режим : </strong> ";
       if (ConfigSettings.wifiModeAP)
       {
         String AP_NameString;
         getDeviceID(AP_NameString);
         wifiState += "AP <br><strong>SSID : </strong>" + AP_NameString;
-        wifiState += "<br>No password";
+        wifiState += "<br>Нет пароля";
         //wifiState += "<br><strong>Password : </strong>ZigStar1";
         wifiState += "<br><strong>IP : </strong>192.168.4.1";
       }
@@ -729,23 +729,23 @@ void handleRoot()
         int rssi = WiFi.RSSI();
         String rssiWifi = String(rssi) + String(" dBm");
         wifiState = wifiState + "STA <br><strong>SSID : </strong>" + ConfigSettings.ssid;
-        wifiState += "<br><strong>Connected : </strong>";
+        wifiState += "<br><strong>Соединен : </strong>";
         if (rssi != 0)
         {
           wifiState += "<img src='/img/ok.png'>";
           wifiState += "<br><strong>RSSI : </strong>" + rssiWifi;
-          wifiState += "<br><strong>Mode : </strong>";
+          wifiState += "<br><strong>Режим : </strong>";
           if (ConfigSettings.dhcpWiFi)
           {
             wifiState += "DHCP<br><strong>IP : </strong>" + WiFi.localIP().toString();
-            wifiState += "<br><strong>Mask : </strong>" + WiFi.subnetMask().toString();
-            wifiState += "<br><strong>GW : </strong>" + WiFi.gatewayIP().toString();
+            wifiState += "<br><strong>Маска : </strong>" + WiFi.subnetMask().toString();
+            wifiState += "<br><strong>Шлюз : </strong>" + WiFi.gatewayIP().toString();
           }
           else
           {
-            wifiState = wifiState + "STATIC<br><strong>IP : </strong>" + ConfigSettings.ipAddressWiFi;
-            wifiState = wifiState + "<br><strong>Mask : </strong>" + ConfigSettings.ipMaskWiFi;
-            wifiState = wifiState + "<br><strong>GW : </strong>" + ConfigSettings.ipGWWiFi;
+            wifiState = wifiState + "Статический<br><strong>IP : </strong>" + ConfigSettings.ipAddressWiFi;
+            wifiState = wifiState + "<br><strong>Маска : </strong>" + ConfigSettings.ipMaskWiFi;
+            wifiState = wifiState + "<br><strong>Шлюз : </strong>" + ConfigSettings.ipGWWiFi;
           }
         }
         else
@@ -760,12 +760,12 @@ void handleRoot()
     }
     result.replace("{{stateWifi}}", wifiState);
 
-    String mqttState = "<strong>Enabled : </strong>";
+    String mqttState = "<strong>Включено : </strong>";
     if (ConfigSettings.mqttEnable)
     {
       mqttState += "<img src='/img/ok.png'>";
-      mqttState = mqttState + "<br><strong>Server : </strong>" + ConfigSettings.mqttServer;
-      mqttState += "<br><strong>Connected : </strong>";
+      mqttState = mqttState + "<br><strong>Сервер : </strong>" + ConfigSettings.mqttServer;
+      mqttState += "<br><strong>Соединено : </strong>";
       if (ConfigSettings.mqttReconnectTime == 0)
       {
         mqttState += "<img src='/img/ok.png'>";
@@ -821,7 +821,7 @@ void handleSaveGeneral()
     }
     else
     {
-      hostname = "ZigStarGW";
+      hostname = "ZigStarGWRU";
     }
 
     if (serverWeb.arg("webAuth") == "on")
@@ -1100,16 +1100,16 @@ void handleLogs()
     result += F("<h2>{{pageName}}</h2>");
     result += F("<div id='main' class='col-sm-12'>");
     result += F("<div id='help_btns' class='col-sm-8'>");
-    result += F("<button type='button' onclick='cmd(\"ClearConsole\");document.getElementById(\"console\").value=\"\";' class='btn btn-secondary'>Clear Console</button> ");
+    result += F("<button type='button' onclick='cmd(\"ClearConsole\");document.getElementById(\"console\").value=\"\";' class='btn btn-secondary'>Очистить консоль</button> ");
 //#ifdef DEBUG
 //    result += F("<button type='button' onclick='cmd(\"GetVersion\");' class='btn btn-success'>Get Version</button> ");
 //    result += F("<button type='button' onclick='cmd(\"ZigRestart\");' class='btn btn-danger'>Zig Restart</button> ");
 //#endif
-    result += F("<button type='button' onclick='cmd(\"ZigRST\");' class='btn btn-primary'>Zigbee Restart</button> ");
+    result += F("<button type='button' onclick='cmd(\"ZigRST\");' class='btn btn-primary'>Перезагрузить Zigbee</button> ");
     result += F("<button type='button' onclick='cmd(\"ZigBSL\");' class='btn btn-warning'>Zigbee BSL</button> ");
     result += F("</div></div>");
     result += F("<div id='main' class='col-sm-8'>");
-    result += F("<div class='col-md-12'>Raw data :</div>");
+    result += F("<div class='col-md-12'>Raw данные :</div>");
     result += F("<textarea class='col-md-12' id='console' rows='16' ></textarea>");
     result += F("</div>");
     result += F("</body>");
@@ -1118,7 +1118,7 @@ void handleLogs()
     result += F("</script>");
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Console");
+    result.replace("{{pageName}}", "Консоль");
     result.replace("{{refreshLogs}}", (String)ConfigSettings.refreshLogs);
 
     serverWeb.send(200, F("text/html"), result);
@@ -1144,7 +1144,7 @@ void handleReboot()
     }
     result += F("<h2>{{pageName}}</h2>");
     result = result + F("</body></html>");
-    result.replace("{{pageName}}", "Rebooted");
+    result.replace("{{pageName}}", "Перезагружен");
 
     serverWeb.send(200, F("text/html"), result);
 
@@ -1174,7 +1174,7 @@ void handleUpdate()
     result += F("</div>");
 
     result = result + F("</body></html>");
-    result.replace("{{pageName}}", "Update Zigbee");
+    result.replace("{{pageName}}", "Обновить Zigbee");
 
     serverWeb.send(200, F("text/html"), result);
   }
@@ -1198,7 +1198,7 @@ void handleESPUpdate()
     result += F("<h2>{{pageName}}</h2>");
     result += FPSTR(HTTP_UPDATE);
     result = result + F("</body></html>");
-    result.replace("{{pageName}}", "Update ESP32");
+    result.replace("{{pageName}}", "Обновление ESP32");
     serverWeb.sendHeader("Connection", "close");
 
     serverWeb.send(200, "text/html", result);
@@ -1252,7 +1252,7 @@ void handleFSbrowser()
     result += F("<textarea class='form-control' id='file' name='file' rows='10'>");
     result += F("</textarea>");
     result += F("</div>");
-    result += F("<button type='submit' class='btn btn-primary mb-2'>Save</button>");
+    result += F("<button type='submit' class='btn btn-primary mb-2'>Сохранить</button>");
     result += F("</form>");
     result += F("</div>");
     result += F("</div>");
@@ -1350,7 +1350,7 @@ void handleScanNetwork()
     {
 
       result = "<select name='WIFISSID' onChange='updateSSID(this.value);'>";
-      result += "<OPTION value=''>--Choose SSID--</OPTION>";
+      result += "<OPTION value=''>--Выберите SSID--</OPTION>";
       for (int i = 0; i < n; ++i)
       {
         result += "<OPTION value='";
@@ -1452,7 +1452,7 @@ void handleWEBUpdate()
     result += F("<h2>{{pageName}}</h2>");
     //result += FPSTR(HTTP_UPDATE);
     result = result + F("</body></html>");
-    result.replace("{{pageName}}", "Update ESP32");
+    result.replace("{{pageName}}", "Обновление ESP32");
     serverWeb.sendHeader("Connection", "close");
 
     serverWeb.send(200, "text/html", result);

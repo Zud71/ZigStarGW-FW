@@ -7,12 +7,14 @@ from glob import glob
 
 def after_build(source, target, env):
     
+    print('Start build ZigStarGWRUS.bin')
+
     shutil.copy(firmware_source, 'bin/firmware.bin')
     for f in glob ('bin/ZigStarGW*.bin'):
         os.unlink (f)
 
-    exit_code = call("python2 tools/merge_bin_esp.py --output_folder ./bin --output_name ZigStarGWRUS.bin --bin_path bin/bootloader_dio_40m.bin bin/firmware.bin bin/partitions.bin --bin_address 0x1000 0x10000 0x8000", shell=True)
-    
+    exit_code = call("python tools/merge_bin_esp.py --output_folder ./bin --output_name ZigStarGWRUS.bin --bin_path bin/bootloader.bin bin/firmware.bin bin/partitions.bin --bin_address 0x1000 0x10000 0x8000", shell=True)
+ 
     VERSION_FILE = 'tools/version'
     try:
         with open(VERSION_FILE) as FILE:
@@ -21,7 +23,7 @@ def after_build(source, target, env):
         print('No version file found')
         VERSION_NUMBER = '0.0.0'
 
-    NEW_NAME_FULL = 'bin/ZigStarGW_v'+VERSION_NUMBER+'.full.bin'
+    NEW_NAME_FULL = 'bin/ZigStarGWRUS_v'+VERSION_NUMBER+'.full.bin'
     NEW_NAME = 'bin/ZigStarGWRUS.bin'
 
     shutil.move('bin/ZigStarGWRUS.bin', NEW_NAME_FULL)

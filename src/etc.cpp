@@ -205,7 +205,7 @@ void getDeviceID(String &devID)
   }
   mac = mac.substring(9);
   mac = mac.substring(0, 2) + mac.substring(3, 5);
-  devID = "ZigStarGW-" + String(mac);
+  devID = "ZigStarGWRU-" + String(mac);
   DEBUG_PRINTLN(devID);
 }
 
@@ -297,7 +297,7 @@ void resetSettings()
 
   const char *path = "/config/configGeneral.json";
 
-  String deviceID = "ZigStarGW";
+  String deviceID = "ZigStarGWRU";
   //getDeviceID(deviceID);
   String StringConfig = "{\"hostname\":\"" + deviceID + "\",\"disableWeb\":0,\"refreshLogs\":1000,\"webAuth\":0,\"webUser\":"",\"webPass\":""}";
 

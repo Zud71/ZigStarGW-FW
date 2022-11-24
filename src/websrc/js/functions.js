@@ -10,12 +10,14 @@ function getXhr(){
 			}
 	}
 	else { // XMLHttpRequest non supporté par le navigateur
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   alert("Ваш браузер не поддерживает объекты XMLHTTPRequest...");
 	   xhr = false;
 	}
 	return xhr;
 }
 
+//лажа какая-то 
+/*
 function power(mac,cmd)
 {
 	var xhr = getXhr();
@@ -29,7 +31,10 @@ function power(mac,cmd)
 	xhr.setRequestHeader('Content-Type','application/html');
 	xhr.send();
 
-}
+}*/
+
+//лажа какая-то 
+/*
 function GetGSMStatus()
 {
 	var xhr = getXhr();
@@ -44,6 +49,10 @@ function GetGSMStatus()
 	xhr.send();
 
 }
+*/
+
+//лажа какая-то 
+/*
 function GetThermostatStatus()
 {
 	var xhr = getXhr();
@@ -57,7 +66,10 @@ function GetThermostatStatus()
 	xhr.setRequestHeader('Content-Type','application/html');
 	xhr.send();
 }
+*/
 
+//лажа какая-то 
+/*
 function GetAction(mac)
 {
 	var xhr = getXhr();
@@ -72,6 +84,7 @@ function GetAction(mac)
 	xhr.setRequestHeader('Content-Type','application/html');
 	xhr.send();
 }
+*/
 
 function readfile(file)
 {
@@ -146,12 +159,12 @@ function getLatestReleaseInfo() {
 	  var dateDiff = new Date() - new Date(release.published_at);
 	  var timeAgo;
 	  if (dateDiff < oneDay) {
-		timeAgo = (dateDiff / oneHour).toFixed(1) + " hours ago";
+		timeAgo = (dateDiff / oneHour).toFixed(1) + " часов назад";
 	  } else {
-		timeAgo = (dateDiff / oneDay).toFixed(1) + " days ago";
+		timeAgo = (dateDiff / oneDay).toFixed(1) + " дней назад";
 	  }
 
-	  var releaseInfo = release.name + " was updated " + timeAgo + " and downloaded " + downloadCount.toLocaleString() + " times.";
+	  var releaseInfo = release.name + " было обновлено " + timeAgo + " и загружено " + downloadCount.toLocaleString() + " раз.";
 	  $("#downloadupdate").attr("href", asset.browser_download_url);
 	  $("#releasehead").text(releaseInfo);
 	  $("#releasebody").text(release.body);
