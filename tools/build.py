@@ -11,7 +11,7 @@ def after_build(source, target, env):
     for f in glob ('bin/ZigStarGW*.bin'):
         os.unlink (f)
 
-    exit_code = call("python2 tools/merge_bin_esp.py --output_folder ./bin --output_name ZigStarGW.bin --bin_path bin/bootloader_dio_40m.bin bin/firmware.bin bin/partitions.bin --bin_address 0x1000 0x10000 0x8000", shell=True)
+    exit_code = call("python2 tools/merge_bin_esp.py --output_folder ./bin --output_name ZigStarGWRUS.bin --bin_path bin/bootloader_dio_40m.bin bin/firmware.bin bin/partitions.bin --bin_address 0x1000 0x10000 0x8000", shell=True)
     
     VERSION_FILE = 'tools/version'
     try:
@@ -22,9 +22,9 @@ def after_build(source, target, env):
         VERSION_NUMBER = '0.0.0'
 
     NEW_NAME_FULL = 'bin/ZigStarGW_v'+VERSION_NUMBER+'.full.bin'
-    NEW_NAME = 'bin/ZigStarGW.bin'
+    NEW_NAME = 'bin/ZigStarGWRUS.bin'
 
-    shutil.move('bin/ZigStarGW.bin', NEW_NAME_FULL)
+    shutil.move('bin/ZigStarGWRUS.bin', NEW_NAME_FULL)
     shutil.move('bin/firmware.bin', NEW_NAME)
 
     print('')
