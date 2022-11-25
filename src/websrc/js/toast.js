@@ -70,7 +70,7 @@ function checkLatestRelease() {
   document.addEventListener('hide.toast', (e) => {
     console.log(e.detail.target);
   });
-	$.getJSON("https://api.github.com/repos/Zud71/ZigStarGW-FW-RU/releases/latest").done(function(release) {
+	$.getJSON("https://api.github.com/repos/Zud71/ZigStarGW-FW-RUS/releases/latest").done(function(release) {
 	  var asset = release.assets[0];
 	  var downloadCount = 0;
 	  for (var i = 0; i < release.assets.length; i++) {
