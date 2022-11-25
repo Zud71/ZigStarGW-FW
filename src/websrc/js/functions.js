@@ -171,3 +171,4 @@ function getLatestReleaseInfo() {
 	  $("#releaseinfo").fadeIn("slow");
 	});
   }
+
