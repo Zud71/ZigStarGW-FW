@@ -66,7 +66,7 @@ void getReadableTime(String &readableTime, unsigned long beginTime)
   minutes %= 60;
   hours %= 24;
 
-  readableTime = String(days) + " d ";
+  readableTime = String(days) + " д ";
 
   if (hours < 10)
   {

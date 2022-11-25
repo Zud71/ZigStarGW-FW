@@ -148,7 +148,7 @@ function cmd(val)
 
 
 function getLatestReleaseInfo() {
-	$.getJSON("https://api.github.com/repos/zud71/ZigStarGW-FW-RUS/releases/latest").done(function(release) {
+	$.getJSON("https://api.github.com/repos/Zud71/ZigStarGW-FW-RUS/releases/latest").done(function(release) {
 	  var asset = release.assets[0];
 	  var downloadCount = 0;
 	  for (var i = 0; i < release.assets.length; i++) {

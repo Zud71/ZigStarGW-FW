@@ -605,11 +605,11 @@ void handleRoot()
       socketStatus = socketStatus + " " + readableTime + " (" + ConfigSettings.connectedClients;
       if (ConfigSettings.connectedClients > 1)
       {
-        socketStatus = socketStatus + " clients)";
+        socketStatus = socketStatus + " клиентов)";
       }
       else
       {
-        socketStatus = socketStatus + " client)";
+        socketStatus = socketStatus + " клиент)";
       }
     }
     else
@@ -669,7 +669,7 @@ void handleRoot()
 
     result.replace("{{espFlashSize}}", String(ESP.getFlashChipSize() / (1024 * 1024)));
 
-    String ethState = "<strong>Соединен : </strong>";
+    String ethState = "<strong>Подключен : </strong>";
     if (ConfigSettings.connectedEther)
     {
       int speed = ETH.linkSpeed();
@@ -729,7 +729,7 @@ void handleRoot()
         int rssi = WiFi.RSSI();
         String rssiWifi = String(rssi) + String(" dBm");
         wifiState = wifiState + "STA <br><strong>SSID : </strong>" + ConfigSettings.ssid;
-        wifiState += "<br><strong>Соединен : </strong>";
+        wifiState += "<br><strong>Подключен : </strong>";
         if (rssi != 0)
         {
           wifiState += "<img src='/img/ok.png'>";
@@ -765,7 +765,7 @@ void handleRoot()
     {
       mqttState += "<img src='/img/ok.png'>";
       mqttState = mqttState + "<br><strong>Сервер : </strong>" + ConfigSettings.mqttServer;
-      mqttState += "<br><strong>Соединен : </strong>";
+      mqttState += "<br><strong>Подключен : </strong>";
       if (ConfigSettings.mqttReconnectTime == 0)
       {
         mqttState += "<img src='/img/ok.png'>";

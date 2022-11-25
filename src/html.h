@@ -135,18 +135,10 @@ const char HTTP_SERIAL[] PROGMEM =
 const char HTTP_HELP[] PROGMEM =
     "<h2>Помощь</h2>"
     "<div id='main' class='col-sm-9'>"
-    /*
-    "<div id='help_btns'>"
-    "<a href='#' class='btn btn-primary'><i class='glyphicon glyphicon-cog'></i>Primary</a>"
-    "<a href='#' class='btn btn-secondary'><i class='glyphicon glyphicon-file'></i>Secondary</a>"
-    "<a href='#' class='btn btn-success'><i class='glyphicon glyphicon-flag'></i>Success</a>"
-    "<a href='#' class='btn btn-danger'><i class='glyphicon glyphicon-lock'></i>Danger</a>"
-    "<a href='#' class='btn btn-warning'><i class='glyphicon glyphicon-tags'></i>Warning</a>"
-    "</div>"
-    */
+
     "<script src='https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js'></script>"
     "<script type='module' src='https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js'></script>"
-    "<zero-md src='https://raw.githubusercontent.com/Zud71/ZigStarGW-FW-RU/main/README.md'></zero-md>"
+    "<zero-md src='https://raw.githubusercontent.com/Zud71/ZigStarGW-FW-RUS/main/README.md'></zero-md>"
     "</div>";
 
 const char HTTP_ERROR[] PROGMEM =
