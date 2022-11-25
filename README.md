@@ -27,3 +27,10 @@ ____
 Тип платы прописывается в system.json параметр board.\
 Если это первая заливка и плата не WT32-ETH01 надо менять system.json
 ____
+
+## Скриншоты
+
+![Screenshot status](images/status.png)
+![Screenshot console](images/console.png)
+![Screenshot update](images/update.png)
+![Screenshot assist](images/assist.png)

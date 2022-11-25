@@ -305,7 +305,7 @@ const char HTTP_UPDATE[] PROGMEM =
     "<script>"
     "function sub(obj){"
     "var fileName = obj.value.split('\\\\');"
-    "document.getElementById('file-input').innerHTML = '   '+ fileName[fileName.length-1];"
+    "document.getElementById('file-input').innerHTML = '&nbsp;&nbsp;&nbsp;'+ fileName[fileName.length-1];"
     "$('#updatebtn').prop('disabled', false);"
     "};"
     "$('form').submit(function(e){"
