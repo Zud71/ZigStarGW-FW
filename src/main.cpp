@@ -432,7 +432,7 @@ bool loadConfigMqtt()
   {
     String deviceID;
     getDeviceID(deviceID);
-    String StringConfig = "{\"enable\":0,\"server\":\"\",\"port\":1883,\"user\":\"mqttuser\",\"pass\":\"\",\"topic\":\"" + deviceID + "\",\"interval\":60,\"discovery\":0}";
+    String StringConfig = "{\"enable\":0,\"server\":\"\",\"port\":1883,\"user\":\"mqttuser\",\"pass\":\"\",\"topic\":\"" + deviceID + "\",\"interval\":60,\"discovery\":0,\"discoveryTopic\":\"homeassistant\"}";
 
     writeDefultConfig(path, StringConfig);
   }
@@ -450,7 +450,7 @@ bool loadConfigMqtt()
     LittleFS.remove(path);
     return false;
   }
-
+  strlcpy(ConfigSettings.mqttDiscoveryTopic, doc["discoveryTopic"] | "homeassistant", sizeof(ConfigSettings.mqttDiscoveryTopic));
   ConfigSettings.mqttEnable = (int)doc["enable"];
   strlcpy(ConfigSettings.mqttServer, doc["server"] | "", sizeof(ConfigSettings.mqttServer));
   //ConfigSettings.mqttServerIP = parse_ip_address(ConfigSettings.mqttServer);

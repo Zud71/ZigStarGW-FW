@@ -125,6 +125,7 @@ struct ConfigSettingsStruct
   char mqttUser[50];
   char mqttPass[50];
   char mqttTopic[50];
+  char mqttDiscoveryTopic[50];
   //bool mqttRetain;
   int mqttInterval;
   bool mqttDiscovery;
