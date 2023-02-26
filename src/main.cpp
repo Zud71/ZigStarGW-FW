@@ -453,7 +453,7 @@ bool loadConfigMqtt()
 
   ConfigSettings.mqttEnable = (int)doc["enable"];
   strlcpy(ConfigSettings.mqttServer, doc["server"] | "", sizeof(ConfigSettings.mqttServer));
-  ConfigSettings.mqttServerIP = parse_ip_address(ConfigSettings.mqttServer);
+  //ConfigSettings.mqttServerIP = parse_ip_address(ConfigSettings.mqttServer);
   ConfigSettings.mqttPort = (int)doc["port"];
   strlcpy(ConfigSettings.mqttUser, doc["user"] | "", sizeof(ConfigSettings.mqttUser));
   strlcpy(ConfigSettings.mqttPass, doc["pass"] | "", sizeof(ConfigSettings.mqttPass));

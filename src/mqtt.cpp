@@ -21,6 +21,7 @@ PubSubClient clientPubSub(clientMqtt);
 
 void mqttConnectSetup()
 {
+    WiFi.hostByName(ConfigSettings.mqttServer,ConfigSettings.mqttServerIP);
     clientPubSub.setServer(ConfigSettings.mqttServerIP, ConfigSettings.mqttPort);
     clientPubSub.setCallback(mqttCallback);
 }
