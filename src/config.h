@@ -88,7 +88,8 @@
 #define FORMAT_LITTLEFS_IF_FAILED true
 
 #define ONE_WIRE_BUS 33
-
+// 5 min default to get any data from Serial
+#define WATCHDOG_TIMER 300
 struct ConfigSettingsStruct
 {
   bool enableWiFi;
@@ -103,10 +104,10 @@ struct ConfigSettingsStruct
   char ipAddress[18];
   char ipMask[16];
   char ipGW[18];
-  int serialSpeed;
-  int socketPort;
+  unsigned long serialSpeed;
+  uint16_t socketPort;
   bool disableWeb;
-  int refreshLogs;
+  uint16_t refreshLogs;
   char hostname[50];
   bool connectedSocket[10];
   int connectedClients;
@@ -116,18 +117,18 @@ struct ConfigSettingsStruct
   int board;
   char boardName[50];
   bool emergencyWifi;
-  int rstZigbeePin;
-  int flashZigbeePin;
+  uint8_t rstZigbeePin;
+  uint8_t flashZigbeePin;
   bool mqttEnable;
   char mqttServer[50];
   IPAddress mqttServerIP;
-  int mqttPort;
+  uint16_t mqttPort;
   char mqttUser[50];
   char mqttPass[50];
   char mqttTopic[50];
   char mqttDiscoveryTopic[50];
   //bool mqttRetain;
-  int mqttInterval;
+  uint mqttInterval;
   bool mqttDiscovery;
   unsigned long mqttReconnectTime;
   unsigned long mqttHeartbeatTime;
@@ -136,9 +137,9 @@ struct ConfigSettingsStruct
   char webUser[50];
   char webPass[50];
   bool disableEmerg;
-  int wifiRetries;
+  uint wifiRetries;
   bool disablePingCtrl;
-  int restarts;
+  uint restarts;
   unsigned long wifiAPenblTime;
 };
 

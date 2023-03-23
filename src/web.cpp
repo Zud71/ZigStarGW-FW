@@ -25,6 +25,7 @@
 #include "webh/ok.png.gz.h"
 #include "webh/wait.gif.gz.h"
 #include "webh/toast.js.gz.h"
+#include <Syslog.h>
 
 extern struct ConfigSettingsStruct ConfigSettings;
 extern unsigned long timeLog;
@@ -32,6 +33,11 @@ extern unsigned long timeLog;
 WebServer serverWeb(80);
 
 HTTPClient clientWeb;
+
+
+extern Syslog syslog;
+
+
 
 void webServerHandleClient()
 {
@@ -1420,6 +1426,7 @@ void printLogTime()
   logPush(']');
 }
 
+
 void printLogMsg(String msg)
 {
   printLogTime();
@@ -1431,6 +1438,8 @@ void printLogMsg(String msg)
     logPush(msg[j]);
   }
   logPush('\n');
+  syslog.log(LOG_INFO, msg.c_str());
+  DEBUG_PRINTLN(msg);
 }
 
 void handleWEBUpdate()

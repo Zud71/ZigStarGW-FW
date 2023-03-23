@@ -12,9 +12,10 @@
 #include "etc.h"
 #include <PubSubClient.h>
 #include "mqtt.h"
+#include <Syslog.h>
 
 extern struct ConfigSettingsStruct ConfigSettings;
-
+extern Syslog syslog;
 WiFiClient clientMqtt;
 
 PubSubClient clientPubSub(clientMqtt);
@@ -44,12 +45,14 @@ void mqttReconnect()
     }
     else
     {
+        
         DEBUG_PRINT(F("failed, rc="));
         DEBUG_PRINT(clientPubSub.state());
         DEBUG_PRINT(F(" try again in "));
         DEBUG_PRINT(ConfigSettings.mqttInterval);
         DEBUG_PRINTLN(F(" seconds"));
-
+        syslog.logf("failed with %d try again in %d seconds",clientPubSub.state(),ConfigSettings.mqttInterval);
+        mqttConnectSetup();
         ConfigSettings.mqttReconnectTime = millis() + ConfigSettings.mqttInterval * 1000;
     }
 }

@@ -12,6 +12,7 @@
 #include "etc.h"
 #include <Update.h>
 #include "version.h"
+#include <esp_task_wdt.h>
 
 #include <driver/uart.h>
 #include <lwip/ip_addr.h>
@@ -27,11 +28,13 @@
 #include <ESP32Ping.h>
 
 #include <DNSServer.h>
+#include <Syslog.h>
 
 const byte DNS_PORT = 53;
 IPAddress apIP(192, 168, 1, 1);
 DNSServer dnsServer;
 
+String syslogServer;
 
 // application config
 unsigned long timeLog;
@@ -50,6 +53,12 @@ void mDNS_start();
 bool setupSTAWifi();
 void setupWifiAP();
 
+WiFiUDP udpClient;
+Syslog syslog(udpClient,SYSLOG_PROTO_IETF);
+#define PROFILE_INIT ulong profile_start, profile_finish, profile_duration;
+#define PROFILE_BEGIN profile_start=millis()
+#define PROFILE_END(MIN_DURATION, _Log) profile_duration = millis()-profile_start; if (profile_duration>MIN_DURATION) \
+  {syslog.logf("Profile end for %s in %d ms", _Log, profile_duration); }
 
 
 void saveBoard(int rev)
@@ -348,8 +357,7 @@ bool loadConfigGeneral()
     String deviceID = "ZigStarGWRU";
     //getDeviceID(deviceID);
     String StringConfig = "{\"hostname\":\"" + deviceID + "\",\"disableWeb\":0,\"refreshLogs\":1000,\"webAuth\":0,\"webUser\":"
-                                                          ",\"webPass\":"
-                                                          "}";
+                                                          ",\"webPass\":\"\",\"sysLogServer\":\"\"}";
 
     writeDefultConfig(path, StringConfig);
   }
@@ -369,6 +377,11 @@ bool loadConfigGeneral()
   }
 
   ConfigSettings.disableWeb = (int)doc["disableWeb"];
+  syslogServer=(const char*)doc["sysLogServer"];
+  syslog.server(syslogServer.c_str(),514);
+  printLogMsg(syslogServer.c_str());
+  syslog.appName("ZigStar");
+  syslog.deviceHostname(ConfigSettings.hostname);
   if ((double)doc["refreshLogs"] < 1000)
   {
     ConfigSettings.refreshLogs = 1000;
@@ -866,6 +879,10 @@ void setup(void)
     enableWifi();
   }
 
+
+ 
+
+
   server.begin(ConfigSettings.socketPort);
   server.setNoDelay(true);
 
@@ -885,7 +902,13 @@ void setup(void)
     DEBUG_PRINTLN(F("RESET ALL SETTINGS!"));
     resetSettings();
   }
-  
+  //restart Zigbee on boot
+  zigbeeRestart();
+  syslog.log("Started");
+  esp_err_t re = esp_task_wdt_init(WATCHDOG_TIMER, true);
+  syslog.log("esp_task_wdt_init " + String(re));
+  re = esp_task_wdt_add(NULL);
+  syslog.log("esp_task_wdt_add " + String(re));
 }
 
 WiFiClient client[10];
@@ -1000,14 +1023,14 @@ void system_loop()
 
 void loop(void)
 {
+  PROFILE_INIT;
   uint16_t net_bytes_read = 0;
   uint8_t net_buf[BUFFER_SIZE];
 
   uint16_t serial_bytes_read = 0;
   uint8_t serial_buf[BUFFER_SIZE];
-
   system_loop();
-
+  PROFILE_BEGIN;
   if (!ConfigSettings.disableWeb)
   {
     webServerHandleClient();
@@ -1019,7 +1042,8 @@ void loop(void)
       webServerHandleClient();
     }
   }
-
+  PROFILE_END(100,"webServerHandleClient");
+  PROFILE_BEGIN;
   if (ConfigSettings.enableWiFi == 0)
   {
     if (ConfigSettings.connectedEther == 0 && ConfigSettings.disconnectEthTime != 0 && ConfigSettings.emergencyWifi != 1 && ConfigSettings.disableEmerg == 0)
@@ -1033,6 +1057,7 @@ void loop(void)
       }
     }
   }
+  PROFILE_END(5,"WiFi")
   //else
   //{
   //  DEBUG_PRINT(F("ConfigSettings.wifiRetries "));
@@ -1046,7 +1071,7 @@ void loop(void)
   //}
 
   
-
+  PROFILE_BEGIN;
   if (server.hasClient())
   {
     for (byte i = 0; i < MAX_SOCKET_CLIENTS; i++)
@@ -1066,54 +1091,65 @@ void loop(void)
     WiFiClient TempClient = server.available();
     TempClient.stop();
   }
-
+  PROFILE_END(5,"hasClient in loop");
   for (byte cln = 0; cln < MAX_SOCKET_CLIENTS; cln++)
   {
+    /*todo: if there was a data sent from net, but no response from serial - loop over couple of seconds in serial.read loop*/
     if (client[cln])
     {
       socketClientConnected(cln);
-      while (client[cln].available())
-      { // read from LAN
-        net_buf[net_bytes_read] = client[cln].read();
-        if (net_bytes_read < BUFFER_SIZE - 1)
-          net_bytes_read++;
-      } // send to Zigbee
-      Serial2.write(net_buf, net_bytes_read);
-      // print to web console
-      printRecvSocket(net_bytes_read, net_buf);
-      net_bytes_read = 0;
+      uint size=0;
+      uint recv=0;
+      uint sent = 0;
+      while ((size = client[cln].available())) {
+           PROFILE_BEGIN;
+           //syslog.logf("%d bytes available from net",size);
+           size = (size >= BUFFER_SIZE ? BUFFER_SIZE : size);
+           client[cln].read(net_buf, size);
+           //syslog.logf("Data read");           
+           Serial2.write(net_buf, size);
+           //syslog.logf("Data written");           
+           Serial2.flush();
+           PROFILE_END(5,"Net to Serial loop")
+           recv+=size;
+
+      }
+      // read data from serial and send to wifi client
+      size=0;
+      while ((size = Serial2.available())) {
+                PROFILE_BEGIN;
+                size = (size >= BUFFER_SIZE ? BUFFER_SIZE : size);
+                Serial2.readBytes(net_buf, size);
+                client[cln].write(net_buf, size);
+                client[cln].flush();
+                PROFILE_END(5,"Serial to Net loop");
+                sent+=size;
+      }
+      if (sent >0) 
+        esp_task_wdt_reset();
+      if (sent > 0 || recv > 0)
+        syslog.logf("Sent %d bytes, received %d bytes",sent,recv);
     }
     else
     {
       socketClientDisconnected(cln);
     }
   }
+  
 
-  if (Serial2.available())
-  {
-    while (Serial2.available())
-    { // read from Zigbee
-      serial_buf[serial_bytes_read] = Serial2.read();
-      if (serial_bytes_read < BUFFER_SIZE - 1)
-        serial_bytes_read++;
-    }
-    // send to LAN
-    for (byte cln = 0; cln < MAX_SOCKET_CLIENTS; cln++)
-    {
-      if (client[cln])
-        client[cln].write(serial_buf, serial_bytes_read);
-    }
-    // print to web console
-    printSendSocket(serial_bytes_read, serial_buf);
-    serial_bytes_read = 0;
-  }
-
+  PROFILE_BEGIN;
+  
   if (ConfigSettings.mqttEnable && (ConfigSettings.connectedEther || ConfigSettings.enableWiFi || ConfigSettings.emergencyWifi))
   {
     mqttLoop();
   }
+  PROFILE_END(5,"MQTT Loop");
+  
   if (WiFi.getMode() == 2)
   {
+    PROFILE_BEGIN;
     dnsServer.processNextRequest();
+    PROFILE_END (5,"dnsServer request");
   }
+
 }
