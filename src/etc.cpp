@@ -203,8 +203,8 @@ void getDeviceID(String &devID)
       DEBUG_PRINTLN(mac);
     }
   }
-  mac = mac.substring(9);
-  mac = mac.substring(0, 2) + mac.substring(3, 5);
+  mac = mac.substring(12);
+  mac = mac.substring(0, 2) + mac.substring(3, 2);
   devID = "ZigStarGWRU-" + String(mac);
   DEBUG_PRINTLN(devID);
 }
