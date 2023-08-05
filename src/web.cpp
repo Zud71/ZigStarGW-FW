@@ -492,7 +492,7 @@ void handleEther()
     result += FPSTR(HTTP_ETHERNET);
     result += F("</html>");
 
-    result.replace("{{pageName}}", "Настройка сетевого порта");
+    result.replace("{{pageName}}", "Настройка сети");
 
     if (ConfigSettings.dhcp)
     {
